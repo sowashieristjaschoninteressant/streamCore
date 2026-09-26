@@ -48,14 +48,13 @@ public:
         return true;
     }
 
-    bool pop(T& value)
-    {
-
-        if (empty())
+    bool pop(T& value){
+        if(empty()){
             return false;
-        
+        }
 
-        value = buffer[read];
+        value = std::move(buffer[read]);
+
         current_size--;
 
         read == (current_capacity -1) ? read = 0 : read++;
