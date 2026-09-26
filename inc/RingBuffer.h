@@ -16,8 +16,9 @@ private:
 public:
     RingBuffer(size_t cap) : current_capacity(cap), buffer(cap)
     {   
-        // capacity 0 should never get passed here if this happens igues the programm should terminate no? but i gues not silently
+        // zero capacity should be a bug from the programmer so i will for now just abort
         assert(cap > 0);
+        
     }
 
     bool push(T&& item){
