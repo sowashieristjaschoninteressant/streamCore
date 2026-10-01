@@ -1,8 +1,7 @@
-
 INCLUDE_DIR := ./inc
 NAME := streamcore
 BIN_DIR := ./bin/
-FLAGS := -g -std=c++17 -Wall -o $(BIN_DIR)$(NAME) -I $(INCLUDE_DIR)
+FLAGS := -g -std=c++17 -Wall -o $(BIN_DIR)$(NAME) -I $(INCLUDE_DIR) -fsanitize=address,undefined
 
 all: build
 

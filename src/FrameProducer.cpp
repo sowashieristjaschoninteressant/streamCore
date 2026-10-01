@@ -1,6 +1,7 @@
 #include <memory>
 #include <cstddef>
 #include <random>
+#include <thread>
 #include "FrameProducer.h"
 #include "streamcutils.h"
 
@@ -17,9 +18,40 @@ std::vector<std::byte> FrameProducer::generateBytes(size_t amount){
 
 Frame FrameProducer::produceFrame(){
 
-    return Frame{
+     return {
         this->current_frameId++,
         std::chrono::steady_clock::now(),
         generateBytes(payloadSize)
     };
+}
+
+void FrameProducer::produceWorker(void){
+    int produced{0};
+    int dropped{0};
+
+    while(this->running){
+        auto frame = produceFrame();
+        if(buffer.push(frame))
+            produced++;
+        else
+            dropped++;
+
+    }
+
+    info("frames produced: %i", produced);
+    info("frames dropped: %i", dropped);
+    
+}
+
+void FrameProducer::start(void){
+     this->running = true;
+     info("producerThread started!");
+     worker = std::thread(&FrameProducer::produceWorker, this);
+}
+
+void FrameProducer::stop(void){
+    this->running = false;
+
+    if(worker.joinable())
+        worker.join();
 }

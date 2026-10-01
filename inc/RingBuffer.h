@@ -1,6 +1,8 @@
+#pragma once
 
 #include <cstddef>
 #include <vector>
+#include <mutex>
 #include <assert.h>
 
 template <typename T>
@@ -8,9 +10,9 @@ class RingBuffer
 {
 private:
     std::vector<T> buffer;
+    std::mutex buff_mutex;
     size_t current_capacity{0};
     size_t current_size{0};
-
     size_t read{0}, write{0};
 
 public:
@@ -22,7 +24,8 @@ public:
     }
 
     bool push(T&& item){
-        
+        const std::lock_guard<std::mutex> guard(buff_mutex);
+
         if (current_size == current_capacity)
             return false;    
         
@@ -36,7 +39,7 @@ public:
 
     bool push(const T& item)
     {
-
+        const std::lock_guard<std::mutex> guard(buff_mutex);
         if (current_size == current_capacity)
             return false;    
 
@@ -49,6 +52,8 @@ public:
     }
 
     bool pop(T& value){
+        
+        const std::lock_guard<std::mutex> guard(buff_mutex);
         if(empty()){
             return false;
         }
