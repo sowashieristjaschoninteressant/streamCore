@@ -11,11 +11,11 @@ namespace RingbufferTests
 
 namespace FrameProducerTests
 {
-
+    void frameProducerTests(void);
 }
 
 
 namespace FrameConsumerTests
 {
-    
+    void frameConsumerTests(void);
 }

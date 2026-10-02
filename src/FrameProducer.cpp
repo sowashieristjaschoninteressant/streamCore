@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <random>
 #include <thread>
+#include <chrono>
 #include "FrameProducer.h"
 #include "streamcutils.h"
 
@@ -28,14 +29,20 @@ Frame FrameProducer::produceFrame(){
 void FrameProducer::produceWorker(void){
     int produced{0};
     int dropped{0};
+    constexpr auto frameDuration = std::chrono::duration<double>(1.0 / 60.0);
+    auto nextFrameTime = std::chrono::steady_clock::now();
 
     while(this->running){
         auto frame = produceFrame();
-        if(buffer.push(frame))
+        
+        if(buffer.push(std::move(frame)))
             produced++;
         else
             dropped++;
-
+       
+        nextFrameTime += std::chrono::duration_cast<std::chrono::steady_clock::duration>(frameDuration);
+        
+        std::this_thread::sleep_until(nextFrameTime);
     }
 
     info("frames produced: %i", produced);
