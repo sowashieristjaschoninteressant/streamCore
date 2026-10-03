@@ -10,6 +10,7 @@ class FrameConsumer{
     RingBuffer<Frame>& buffer;
     std::thread worker;
     std::atomic<bool> running{false};
+    std::condition_variable cv;
     void consumeWorker();
     bool consumeFrame();
     public:

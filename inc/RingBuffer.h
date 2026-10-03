@@ -10,7 +10,6 @@ class RingBuffer
 {
 private:
     std::vector<T> buffer;
-    std::mutex buff_mutex;
     size_t current_capacity{0};
     size_t current_size{0};
     size_t read{0}, write{0};
@@ -24,7 +23,7 @@ public:
     }
 
     bool push(T&& item){
-        const std::lock_guard<std::mutex> guard(buff_mutex);
+       
 
         if (current_size == current_capacity)
             return false;    
@@ -39,7 +38,7 @@ public:
 
     bool push(const T& item)
     {
-        const std::lock_guard<std::mutex> guard(buff_mutex);
+       
         if (current_size == current_capacity)
             return false;    
 
@@ -53,7 +52,7 @@ public:
 
     bool pop(T& value){
         
-        const std::lock_guard<std::mutex> guard(buff_mutex);
+       
         if(empty()){
             return false;
         }
@@ -67,11 +66,21 @@ public:
         return true;
     }
 
-    bool empty () const { return current_size == 0;}
+    bool empty () const {
+       
+        return current_size == 0;
+    }
 
-    bool full() const { return current_size == current_capacity;}
+    bool full() const {
+        
+        return current_size == current_capacity;}
 
-    size_t size() const{ return current_size;}
-    size_t capacity() const{ return current_capacity; }
+    size_t size() const{ 
+        
+        return current_size;
+    }
+    size_t capacity() const{
+         return current_capacity;
+        }
 
 };

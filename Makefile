@@ -10,7 +10,7 @@ testing:
 	g++ ./tests/*.cpp -I $(INCLUDE_DIR) -o $(BIN_DIR)/Tests -Wall -g -std=c++11
 
 clean:
-	rm $(BIN_DIR)$(NAME)
+	rm -rf $(BIN_DIR)*
 
 build:
 	mkdir -p $(BIN_DIR)

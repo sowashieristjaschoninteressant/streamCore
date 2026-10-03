@@ -1,7 +1,9 @@
-#include "FrameConsumer.h"
-#include "streamcutils.h"
 #include <chrono>
 #include <thread>
+#include <condition_variable>
+#include "FrameConsumer.h"
+#include "streamcutils.h"
+
 
 bool FrameConsumer::consumeFrame()
 {
@@ -15,11 +17,11 @@ bool FrameConsumer::consumeFrame()
   auto diff = now - frame.timestamp;
   auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
 
-  /*
+  
   info("consume frame: %i", frame.frame_id);
   info("latency: %i", ms);
   info("payload bytes: %i", frame.payload.size());
-  */
+  
   return true;
 }
 
@@ -28,8 +30,12 @@ void FrameConsumer::consumeWorker(void)
     int consumed{0};
     info("consumeThread started!");
     while(this->running){
-        if(this->consumeFrame())
-          consumed++;
+
+      if(consumeFrame()){
+        consumed++;
+      };
+
+      
         
     }
 
@@ -39,9 +45,9 @@ void FrameConsumer::consumeWorker(void)
 void FrameConsumer::start(void)
 {
   this->running = true;
-  
   worker = std::thread(&FrameConsumer::consumeWorker, this);
 }
+
 void FrameConsumer::stop(void)
 {
   this->running = false;

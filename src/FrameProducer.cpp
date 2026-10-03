@@ -27,9 +27,9 @@ Frame FrameProducer::produceFrame(){
 }
 
 void FrameProducer::produceWorker(void){
+    constexpr auto frameDuration = std::chrono::duration<double>(1.0 / 60.0);
     int produced{0};
     int dropped{0};
-    constexpr auto frameDuration = std::chrono::duration<double>(1.0 / 60.0);
     auto nextFrameTime = std::chrono::steady_clock::now();
 
     while(this->running){
